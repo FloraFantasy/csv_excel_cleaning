@@ -3,8 +3,10 @@ import pandas as pd
 def fix_dates(df):
     for col in df.columns:
         if "Date" in col:
-            df[col] = pd.to_datetime(df[col], format="mixed")
-    return df
+            df[col] = pd.to_datetime(df[col], errors="coerce", infer_datetime_format=True, format="mixed")
+            fixed = df[col].count()
+    return df, fixed
+#df[col] = pd.to_datetime(df[col], format="mixed")
 
 def fill_missing(df, strategy):
     # By default everything "N/A"

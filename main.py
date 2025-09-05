@@ -7,7 +7,7 @@ print("Before cleaning:\n", df)
 print(df.info())
 
 # calls cleaning functions
-clean_df = cleaning.fix_dates(df)
+clean_df, dates_converted = cleaning.fix_dates(df)
 clean_df = cleaning.trim_spaces(clean_df)
 clean_df = cleaning.normalize_text(clean_df)
 clean_df = cleaning.remove_duplicates(clean_df)
@@ -18,5 +18,5 @@ print("\nAfter cleaning:\n", clean_df.to_string())
 file_saver.load_file(clean_df, file_path)
 
 # create summary
-summary = summary.generate_summary(df, clean_df)
+summary = summary.generate_summary(df, clean_df, dates_converted)
 print(summary)
