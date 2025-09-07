@@ -1,22 +1,24 @@
 from cleaner import file_loader, cleaning, file_saver, summary
 
-# first calles load_file(filepath)
-file_path = "data/messy_data.csv"
-df = file_loader.load_file(file_path)
-print("Before cleaning:\n", df)
-print(df.info())
+def run_pipeline(file_path, output_dir="outputs/", fill_strategy="N/A"):
+    # Load file
+    df = file_loader.load_file(file_path)
 
-# calls cleaning functions
-clean_df, dates_converted = cleaning.fix_dates(df)
-clean_df = cleaning.trim_spaces(clean_df)
-clean_df = cleaning.normalize_text(clean_df)
-clean_df = cleaning.remove_duplicates(clean_df)
-clean_df = cleaning.fill_missing(clean_df, "N/A")
-print("\nAfter cleaning:\n", clean_df.to_string())
+    # Cleaning steps
+    clean_df, dates_converted = cleaning.fix_dates(df)
+    clean_df = cleaning.trim_spaces(clean_df)
+    clean_df = cleaning.normalize_text(clean_df)
+    clean_df = cleaning.remove_duplicates(clean_df)
+    clean_df = cleaning.fill_missing(clean_df, fill_strategy)
 
-# safe file
-file_saver.load_file(clean_df, file_path)
+    # Save cleaned file
+    file_saver.save_file(clean_df, file_path, output_dir)
 
-# create summary
-summary = summary.generate_summary(df, clean_df, dates_converted)
-print(summary)
+    # Generate summary
+    report = summary.generate_summary(df, clean_df, dates_converted)
+
+    return clean_df, report
+
+# This keeps it runnable directly too
+if __name__ == "__main__":
+    run_pipeline("data/messy_data.csv")
